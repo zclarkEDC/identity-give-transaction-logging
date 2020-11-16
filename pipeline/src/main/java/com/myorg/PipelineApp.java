@@ -8,7 +8,7 @@ public class PipelineApp {
     public static void main(final String[] args) {
         App app = new App();
 
-        new PipelineStack(app, "sam-cicd-app");
+        new PipelineStack(app, "sam-app-cicd-pipeline");
 
         app.synth();
     }
