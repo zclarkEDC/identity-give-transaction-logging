@@ -71,6 +71,28 @@ public class PipelineStack extends Stack {
                 .stageName("Build")
                 .actions(Collections.singletonList(buildAction))
                 .build());
+
+        // Deploy stage
+        CloudFormationCreateReplaceChangeSetAction createChangeSet = new CloudFormationCreateReplaceChangeSetAction(CloudFormationCreateReplaceChangeSetActionProps.builder()
+                .actionName("CreateChangeSet")
+                .templatePath(buildOutput.atPath("packaged.yaml"))
+                .stackName("sam-app")
+                .adminPermissions(true)
+                .changeSetName("sam-app-dev-changeset")
+                .runOrder(1)
+                .build());
+
+        CloudFormationExecuteChangeSetAction executeChangeSet = new CloudFormationExecuteChangeSetAction(CloudFormationExecuteChangeSetActionProps.builder()
+                .actionName("Deploy")
+                .stackName("sam-app")
+                .changeSetName("sam-app-dev-changeset")
+                .runOrder(2)
+                .build());
+
+        pipeline.addStage(StageOptions.builder()
+                .stageName("Dev")
+                .actions(Arrays.asList(createChangeSet, executeChangeSet))
+                .build());
     }
 
 }
