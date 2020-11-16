@@ -30,8 +30,10 @@ To begin with the CI/CD pipeline, you'll need to [create a personal access token
 This oauth token will be used by AWS to read changes to the repository and kick off the pipeline for us. The token will need to be stored in AWS SecretsManager with a type of `other`. Make sure to note the key you use in the key/value pair of the secret, as this is a parameter to the CDK deployment (a good default is "oauthToken"). You will also need to note the `Secret Name` and give this to the CDK deployment as a parameter.
 
 Once you have the Secret safely stored in SecretsManager, you can run the following commands to deploy the CI/CD pipeline (which will also deploy the app automagically!)
-  - `mvn clean package`
-  - `cdk deploy --parameters secretsManagerSecretId=<my-secrets-id> --parameters secretsManagerJsonKey=<my-json-key>`
+```bash
+mvn clean package
+cdk deploy --parameters secretsManagerSecretId=<my-secrets-id> --parameters secretsManagerJsonKey=<my-json-key>
+```
 
 ## Manually deploy the sample application (without CI/CD)
 
