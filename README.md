@@ -1,11 +1,14 @@
 # sam-app
 
-This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI. It includes the following files and folders.
+Note: Based off the [AWS CI/CD Serverless Workshop](https://cicd.serverlessworkshops.io/java.html)
+
+This project contains source code and supporting files for a serverless application that you can deploy with the SAM CLI as well as a CDK CI/CD pipeline that manages the build and deploy process. It includes the following files and folders.
 
 - HelloWorldFunction/src/main - Code for the application's Lambda function.
 - events - Invocation events that you can use to invoke the function.
 - HelloWorldFunction/src/test - Unit tests for the application code. 
 - template.yaml - A template that defines the application's AWS resources.
+- pipeline - The CDK project containing the CI/CD pipeline for this SAM application.
 
 The application uses several AWS resources, including Lambda functions and an API Gateway API. These resources are defined in the `template.yaml` file in this project. You can update the template to add AWS resources through the same deployment process that updates your application code.
 
@@ -17,7 +20,20 @@ The AWS Toolkit is an open source plug-in for popular IDEs that uses the SAM CLI
 * [VS Code](https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/welcome.html)
 * [Visual Studio](https://docs.aws.amazon.com/toolkit-for-visual-studio/latest/user-guide/welcome.html)
 
-## Deploy the sample application
+## Deploying the application via the CI/CD pipeline
+To use the CI/CD pipeline to deploy the application automatically, the CDK will setup a `source` stage to watch this GitHub repository, followed by a `build` stage that compiles our code and puts any artifacts into S3, and concludes with a `deploy` stage that executes a cloudformation changeset to deploy the changes to our code.
+
+To begin with the CI/CD pipeline, you'll need to [create a personal access token in GitHub](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token#creating-a-token) for the repository. The GitHub Personal Access Token should have these scopes:
+  - repo - to read the repository 
+  - admin:repo_hook - if you plan to use webhooks (true by default).
+
+This oauth token will be used by AWS to read changes to the repository and kick off the pipeline for us. The token will need to be stored in AWS SecretsManager with a type of `other`. Make sure to note the key you use in the key/value pair of the secret, as this is a parameter to the CDK deployment (a good default is "oauthToken"). You will also need to note the `Secret Name` and give this to the CDK deployment as a parameter.
+
+Once you have the Secret safely stored in SecretsManager, you can run the following commands to deploy the CI/CD pipeline (which will also deploy the app automagically!)
+  - `mvn clean package`
+  - `cdk deploy --parameters secretsManagerSecretId=<my-secrets-id> --parameters secretsManagerJsonKey=<my-json-key>`
+
+## Manually deploy the sample application (without CI/CD)
 
 The Serverless Application Model Command Line Interface (SAM CLI) is an extension of the AWS CLI that adds functionality for building and testing Lambda applications. It uses Docker to run your functions in an Amazon Linux environment that matches Lambda. It can also emulate your application's build environment and API.
 
