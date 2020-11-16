@@ -3,6 +3,8 @@ package com.myorg;
 import software.amazon.awscdk.core.Construct;
 import software.amazon.awscdk.core.Stack;
 import software.amazon.awscdk.core.StackProps;
+import software.amazon.awscdk.core.CfnParameter;
+import software.amazon.awscdk.core.CfnParameterProps;
 import software.amazon.awscdk.core.SecretsManagerSecretOptions;
 import software.amazon.awscdk.core.SecretValue;
 import software.amazon.awscdk.services.s3.Bucket;
@@ -22,6 +24,15 @@ public class PipelineStack extends Stack {
     public PipelineStack(final Construct scope, final String id, final StackProps props) {
         super(scope, id, props);
 
+        CfnParameter secretsManagerSecretId = new CfnParameter(this, "secretsManagerSecretId", CfnParameterProps.builder()
+                .type("String")
+                .description("The id of the secrets manager secret used to store the GitHub oauth token.")
+                .build());
+        CfnParameter secretsManagerJsonKey = new CfnParameter(this, "secretsManagerJsonKey", CfnParameterProps.builder()
+                .type("String")
+                .description("The json key corresponding to the oauth token in the Secret.")
+                .build());
+
         // The code that defines your stack goes here
         Bucket artifactsBucket = new Bucket(this, "ArtifactsBucket");
 
@@ -30,8 +41,8 @@ public class PipelineStack extends Stack {
 
         Artifact sourceOutput = new Artifact("sourceOutput");
 
-        SecretValue oauthToken = SecretValue.secretsManager("sam-cicd-app-key-2", SecretsManagerSecretOptions.builder()
-                .jsonField("oauthToken")
+        SecretValue oauthToken = SecretValue.secretsManager(secretsManagerSecretId.getValueAsString(), SecretsManagerSecretOptions.builder()
+                .jsonField(secretsManagerJsonKey.getValueAsString())
                 .build());
         GitHubSourceAction gitHubSource = new GitHubSourceAction(GitHubSourceActionProps.builder()
                 .actionName("GitHub_Source")
