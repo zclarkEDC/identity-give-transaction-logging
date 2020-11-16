@@ -3,6 +3,7 @@ package com.myorg;
 import software.amazon.awscdk.core.Construct;
 import software.amazon.awscdk.core.Stack;
 import software.amazon.awscdk.core.StackProps;
+import software.amazon.awscdk.core.SecretsManagerSecretOptions;
 import software.amazon.awscdk.core.SecretValue;
 import software.amazon.awscdk.services.s3.Bucket;
 import software.amazon.awscdk.services.codebuild.*;
@@ -29,7 +30,9 @@ public class PipelineStack extends Stack {
 
         Artifact sourceOutput = new Artifact("sourceOutput");
 
-        SecretValue oauthToken = SecretValue.secretsManager("sam-cicd-app-key");
+        SecretValue oauthToken = SecretValue.secretsManager("sam-cicd-app-key-2", SecretsManagerSecretOptions.builder()
+                .jsonField("oauthToken")
+                .build());
         GitHubSourceAction gitHubSource = new GitHubSourceAction(GitHubSourceActionProps.builder()
                 .actionName("GitHub_Source")
                 .repo("sam-cicd-app")
