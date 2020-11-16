@@ -41,15 +41,14 @@ public class PipelineStack extends Stack {
 
         Artifact sourceOutput = new Artifact("sourceOutput");
 
-        SecretValue oauthToken = SecretValue.secretsManager(secretsManagerSecretId.getValueAsString(), SecretsManagerSecretOptions.builder()
-                .jsonField(secretsManagerJsonKey.getValueAsString())
-                .build());
         GitHubSourceAction gitHubSource = new GitHubSourceAction(GitHubSourceActionProps.builder()
                 .actionName("GitHub_Source")
                 .repo("sam-cicd-app")
                 .owner("folksgl")
                 .branch("main")
-                .oauthToken(oauthToken)
+                .oauthToken(SecretValue.secretsManager(secretsManagerSecretId.getValueAsString(), SecretsManagerSecretOptions.builder()
+                        .jsonField(secretsManagerJsonKey.getValueAsString())
+                        .build()))
                 .output(sourceOutput)
                 .build());
 
