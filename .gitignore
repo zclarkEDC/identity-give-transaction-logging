@@ -1,0 +1,6 @@
+### AWS ###
+.aws-sam/
+packaged.yaml
+.cdk.staging
+cdk.out
+node_modules
