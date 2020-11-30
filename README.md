@@ -10,6 +10,10 @@
 
 ### Build/Local Deploy
 
+`npm install`
+
+Installs npm dependencies
+
 `sam build`
 
 Builds the project.
@@ -20,3 +24,26 @@ Starts the REST API on `http://127.0.0.1:3000`
 
 
 ### Available Endpoints
+
+`/transaction`
+
+## Example POST Request
+```
+http://127.0.0.1:3000/transaction?TableName=TransactionLogs
+
+{
+    "TableName": "TransactionLogs",
+        "Item": {
+            "UUID": "110",
+            "Timestamp": 1605873564,
+            "Customer": "test man",
+            "ServiceType": "Proofing Services",
+            "CSP": "Idemia",
+            "Result": "in-progress",
+            "ProofingStatus": "attending in person proofing"
+
+        }
+    
+}
+
+```
