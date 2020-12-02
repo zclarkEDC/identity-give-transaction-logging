@@ -29,19 +29,13 @@ exports.handler = (event, context, callback) => {
     });
 
     switch (event.httpMethod) {
-        case 'DELETE':
-            dynamo.deleteItem(JSON.parse(event.body), done);
-            break;
         case 'GET':
             dynamo.scan({ TableName: event.queryStringParameters.TableName }, done);
-            break;
-        case 'POST':
-            dynamo.putItem(JSON.parse(event.body), done);
             break;
         case 'PUT':
             dynamo.updateItem(JSON.parse(event.body), done);
             break;
         default:
-            done(new Error(`Unsupported method "${event.httpMethod}"`));
+            done(new Error(`Unsupported method you fool"${event.httpMethod}"`));
     }
 };

@@ -6,22 +6,46 @@ Parameters:
   TableNameParameter: 
     Type: String
 Resources:
-  transactionLoggingFunction:
-    Type: 'AWS::Serverless::Function'
-    Properties:
-      Handler: index.handler
-      Runtime: nodejs12.x
-      CodeUri: .
-      Description: >-
-        A simple backend (read/write to DynamoDB) with a RESTful API endpoint using Amazon API Gateway.
-      MemorySize: 512
-      Timeout: 10
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TableNameParameter
-      Events:
-        Api1:
-          Type: Api
-          Properties:
-            Path: /transaction
-            Method: ANY
+  CreateTransactionLog:
+      Type: 'AWS::Serverless::Function'
+      Properties:
+        Handler: createLog.handler
+        Runtime: nodejs12.x
+        CodeUri: transactionCRUD/
+        Description: >-
+          A simple backend (read/write to DynamoDB) with a RESTful API endpoint using Amazon API Gateway.
+        MemorySize: 512
+        Timeout: 10
+        Policies:
+          - DynamoDBCrudPolicy:
+              TableName: !Ref TableNameParameter
+        Events:
+          Api1:
+            Type: Api
+            Properties:
+              Path: /transaction
+              Method: post
+  GetTransactionLogs:
+        Type: 'AWS::Serverless::Function'
+        Properties:
+          Handler: getLogs.handler
+          Runtime: nodejs12.x
+          CodeUri: transactionCRUD/
+          Description: >-
+            A simple backend (read/write to DynamoDB) with a RESTful API endpoint using Amazon API Gateway.
+          MemorySize: 512
+          Timeout: 10
+          Policies:
+            - DynamoDBCrudPolicy:
+                TableName: !Ref TableNameParameter
+          Events:
+            Api1:
+              Type: Api
+              Properties:
+                Path: /transaction
+                Method: get
+            Api2:
+              Type: Api
+              Properties:
+                Path: /transaction/{UUID}
+                Method: get
