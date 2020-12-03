@@ -1,10 +1,23 @@
 {
-  "name": "nodejs-upgrade-functions",
+  "name": "identity-give-transaction-logging-1",
   "version": "1.0.0",
-  "private": true,
+  "description": "- [Maven](https://maven.apache.org/) \r - [OpenJDK 8](https://developers.redhat.com/products/openjdk/download)\r - [AWS SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)\r - [Docker](https://www.docker.com/products/docker-desktop)",
+  "main": "createLog.js",
   "dependencies": {
-    "dynamodb-doc": "^1.0.0",
-    "throat": "^4.0.0",
-    "uuidv4": "^6.2.5"
-  }
+    "dynamodb-doc": "^1.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zclarkEDC/identity-give-transaction-logging.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zclarkEDC/identity-give-transaction-logging/issues"
+  },
+  "homepage": "https://github.com/zclarkEDC/identity-give-transaction-logging#readme"
 }

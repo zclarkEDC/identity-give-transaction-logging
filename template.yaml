@@ -13,22 +13,43 @@ Resources:
         Runtime: nodejs12.x
         CodeUri: transactionCRUD/
         Description: >-
-          A simple backend (read/write to DynamoDB) with a RESTful API endpoint using Amazon API Gateway.
+          Creates a new transaction log record, or updates an existing record with the same UUID.
         MemorySize: 512
         Timeout: 10
         Policies:
           - DynamoDBCrudPolicy:
               TableName: !Ref TableNameParameter
         Events:
-          Api1:
+          CreateTransactionLog:
             Type: Api
             Properties:
               Path: /transaction
               Method: post
-  GetTransactionLogs:
+
+  GetTransactionLog:
+      Type: 'AWS::Serverless::Function'
+      Properties:
+        Handler: getLog.handler
+        Runtime: nodejs12.x
+        CodeUri: transactionCRUD/
+        Description: >-
+          Get a transaction log based on the UUID and timestamp
+        MemorySize: 512
+        Timeout: 10
+        Policies:
+          - DynamoDBCrudPolicy:
+              TableName: !Ref TableNameParameter
+        Events:
+          ReadTransactionLog:
+            Type: Api
+            Properties:
+              Path: /transaction/{UUID}/{Timestamp}
+              Method: get
+
+  DeleteTransactionLog:
         Type: 'AWS::Serverless::Function'
         Properties:
-          Handler: getLogs.handler
+          Handler: deleteLog.handler
           Runtime: nodejs12.x
           CodeUri: transactionCRUD/
           Description: >-
@@ -39,13 +60,8 @@ Resources:
             - DynamoDBCrudPolicy:
                 TableName: !Ref TableNameParameter
           Events:
-            Api1:
+            DeleteTransactionLog:
               Type: Api
               Properties:
-                Path: /transaction
-                Method: get
-            Api2:
-              Type: Api
-              Properties:
-                Path: /transaction/{UUID}
-                Method: get
+                Path: /transaction/{UUID}/{Timestamp}
+                Method: delete

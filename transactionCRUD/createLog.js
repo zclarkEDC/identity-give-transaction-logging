@@ -1,120 +1,36 @@
-/* this is working code
-const { DynamoDB } = require('aws-sdk');
-const db = new DynamoDB.DocumentClient();
-
-
-module.exports.create = async event => {
-    console.log('Received event:', JSON.stringify(event, null, 2));
-    const reqBody = JSON.parse(event.body);
-    console.log('REEEE', JSON.stringify(reqBody));
-    const transactionLog = {
-        UUID: reqBody.UUID,
-        Timestamp: reqBody.Timestamp,
-        tester: reqBody.Customer
-    };
-    console.log('REEEE', JSON.stringify(transactionLog));
-    await db.put({
-        TableName: event.queryStringParameters.TableName,
-        Item: transactionLog
-    }).promise();
-
-    
-    return {statusCode: 200, body: JSON.stringify(transactionLog)};
-
-}
-
-*/
-/* iteration 2, working 
-const { DynamoDB } = require('aws-sdk');
-const db = new DynamoDB.DocumentClient();
-
-
-
-
-exports.handler = async (event, context, callback) => {
-
-    let response;
-    let statusCode = 201;
-    try {
-        console.log('Received event:', JSON.stringify(event, null, 2));
-        const reqBody = JSON.parse(event.body);
-        console.log('REEEE', JSON.stringify(reqBody));
-        const transactionLog = {
-            UUID: reqBody.UUID,
-            Timestamp: reqBody.Timestamp,
-            tester: reqBody.Customer
-        };
-        console.log('REEEE', JSON.stringify(transactionLog));
-        await db.put({
-            TableName: event.queryStringParameters.TableName,
-            Item: transactionLog
-        }).promise();
-        response = JSON.stringify(transactionLog);
-    }
-    catch (err) {
-        response = err.message;
-        statusCode = '400';
-
-    }
-    return {
-        statusCode,
-        body: response
-    };
-
-
-
-    //return {statusCode: 200, body: JSON.stringify(transactionLog)};
-
-}
-*/
 'use strict';
-
 console.log('Loading function');
-
 const doc = require('dynamodb-doc');
-
 const dynamo = new doc.DynamoDB();
+exports.handler = async (event, context) => {
 
-//const { uuid } = require('uuidv4');
-const { v4: uuidv4 } = require('uuid');
-exports.handler = async (event, context, callback) => {
+    let body;
+    let statusCode = '201';
+    const headers = {
+        'Content-Type': 'application/json',
+    };
 
-    let response;
-    let statusCode = 201;
+    //add UUID and Timestamp to the request body
+    const reqBody = JSON.parse(event.body);
+    reqBody["UUID"] = context.awsRequestId; //comment this out if you want to specify your own UUID
+    reqBody["Timestamp"] = Date.now();     //comment this out if you want to make a request with your own Timestamp
     
+    //send to the DynamoDB table
     try {
-        //console.log('Received event:', JSON.stringify(event, null, 2));
-        const reqBody = JSON.parse(event.body);
-        console.log('REEEE', JSON.stringify(reqBody));
-        var d = Date.now();
-        const transactionLog = {
-            UUID: uuidv4(),
-            Timestamp: d,
-            tester: reqBody.Customer
-        };
-        console.log('REEEE', JSON.stringify(transactionLog));
-        response = await dynamo.putItem({
+        body = await dynamo.putItem({
             TableName: event.queryStringParameters.TableName,
-            Item: transactionLog
+            Item: reqBody
         }, function (err, data) {
-            if (err) console.log('it fucked up', err.message, err.stack); // an error occurred
-            else console.log('it worked?',data);           // successful response
+            if (err) console.log('Error:', err.message, err.stack); // an error occurred
+            else console.log('Success:',data);                     // successful response
         }).promise();
     }
     catch (err) {
-        response = err.message;
-        statusCode = 400;
-
+        body = err;
+        statusCode = body.statusCode;
     }
     finally {
-        response = JSON.stringify(response);
+        body = JSON.stringify(body);
     }
-    return {
-        statusCode,
-        body: response
-    };
-
-
-
-
+    return { body, statusCode, headers };
 }
