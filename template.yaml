@@ -5,6 +5,11 @@ Description: >-
 Parameters: 
   TableNameParameter: 
     Type: String
+Globals:
+  Function:
+    Environment:
+      Variables:
+        TABLE_NAME: TransactionLogs
 Resources:
   CreateTransactionLog:
       Type: 'AWS::Serverless::Function'
@@ -18,7 +23,7 @@ Resources:
         Timeout: 10
         Policies:
           - DynamoDBCrudPolicy:
-              TableName: !Ref TableNameParameter
+              TableName: !Ref TransactionLogs
         Events:
           CreateTransactionLog:
             Type: Api
@@ -38,7 +43,7 @@ Resources:
         Timeout: 10
         Policies:
           - DynamoDBCrudPolicy:
-              TableName: !Ref TableNameParameter
+              TableName: !Ref TransactionLogs
         Events:
           ReadTransactionLog:
             Type: Api
@@ -58,10 +63,34 @@ Resources:
           Timeout: 10
           Policies:
             - DynamoDBCrudPolicy:
-                TableName: !Ref TableNameParameter
+                TableName: !Ref TransactionLogs
           Events:
             DeleteTransactionLog:
               Type: Api
               Properties:
                 Path: /transaction/{UUID}/{Timestamp}
                 Method: delete
+
+  TransactionLogsTable: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        - 
+          AttributeName: "UUID"
+          AttributeType: "S"
+        - 
+          AttributeName: "Timestamp"
+          AttributeType: "N"
+
+      KeySchema: 
+        - 
+          AttributeName: "UUID"
+          KeyType: "HASH"
+        - 
+          AttributeName: "Timestamp"
+          KeyType: "RANGE"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName: "TransactionLogs"
+      

@@ -2,6 +2,7 @@
 console.log('Loading function');
 const doc = require('dynamodb-doc');
 const dynamo = new doc.DynamoDB();
+const TableName = process.env.TABLE_NAME;
 exports.handler = async (event, context) => {
 
     let body;
@@ -18,7 +19,7 @@ exports.handler = async (event, context) => {
     //send to the DynamoDB table
     try {
         body = await dynamo.putItem({
-            TableName: event.queryStringParameters.TableName,
+            TableName,
             Item: reqBody
         }, function (err, data) {
             if (err) console.log('Error:', err.message, err.stack); // an error occurred

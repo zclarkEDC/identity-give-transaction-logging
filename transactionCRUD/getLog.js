@@ -2,6 +2,7 @@
 console.log('Loading function');
 var doc = require('aws-sdk');
 const dynamo = new doc.DynamoDB();
+const TableName = process.env.TABLE_NAME;
 exports.handler = async (event, context) => {
 
     let body;
@@ -12,7 +13,7 @@ exports.handler = async (event, context) => {
     //send to the DynamoDB table
     try {
         var params = {
-            TableName: 'TransactionLogs',
+            TableName,
             Key: {
               'UUID': {S: event.pathParameters.UUID},
               'Timestamp': {N: event.pathParameters.Timestamp}
