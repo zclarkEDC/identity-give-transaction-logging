@@ -7,14 +7,14 @@ from pipeline_stack import PipelineStack
 
 app = core.App()
 
-app_name = "give-transaction-logging"
+app_name = "transaction-logging"
 pipeline_stack_name = f"{app_name}-pipeline"
 
 PipelineStack(
     app,
     app_name,
     stack_name=pipeline_stack_name,
-    repo_owner="zclarkEDC",
+    repo_owner="18F",
     repo_name="identity-give-transaction-logging",
 )
 

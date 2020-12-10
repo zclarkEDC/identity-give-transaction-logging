@@ -3,7 +3,7 @@ import boto3
 from boto3.dynamodb.conditions import Key
 
 
-app = Chalice(app_name="give-transaction-logging")
+app = Chalice(app_name="transaction-logging")
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table("transaction-logs-1")
 
@@ -34,3 +34,9 @@ def item_set():
         return {"message": "ok", "status": 201, "id": data["id"]}
     except Exception as e:
         return {"message": str(e)}
+
+
+@app.route("/hello/{name}")
+def hello_name(name):
+    # '/hello/james' -> {"hello": "james"}
+    return {"hello": name}
