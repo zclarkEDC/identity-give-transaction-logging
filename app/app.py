@@ -1,30 +1,36 @@
 from chalice import Chalice
+import boto3
+from boto3.dynamodb.conditions import Key
 
-app = Chalice(app_name="app")
+
+app = Chalice(app_name="blog-demo")
+dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table("blog-demo-1")
 
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def index():
-    return {"hello": "world"}
+    response = table.scan()
+    data = response.get("Items", None)
+
+    return {"data": data}
 
 
-@app.route("/hello/{name}")
-def hello_name(name):
-    # '/hello/james' -> {"hello": "james"}
-    return {"hello": name}
+@app.route("/item/{id}", methods=["GET"])
+def item_get(id):
+    response = table.query(KeyConditionExpression=Key("id").eq(id))
+    data = response.get("Items", None)
+
+    return {"data": data}
 
 
-# The view function above will return {"hello": "world"}
-# whenever you make an HTTP GET request to '/'.
-#
-# Here are a few more examples:
-#
-# @app.route('/users', methods=['POST'])
-# def create_user():
-#     # This is the JSON body the user sent in their POST request.
-#     user_as_json = app.current_request.json_body
-#     # We'll echo the json body back to the user in a 'user' key.
-#     return {'user': user_as_json}
-#
-# See the README documentation for more examples.
-#
+@app.route("/item", methods=["POST"])
+def item_set():
+    data = app.current_request.json_body
+
+    try:
+        table.put_item(Item={"id": data["id"], "text": data["text"]})
+
+        return {"message": "ok", "status": 201, "id": data["id"]}
+    except Exception as e:
+        return {"message": str(e)}
