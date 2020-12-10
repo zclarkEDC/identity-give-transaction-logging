@@ -7,15 +7,15 @@ from pipeline_stack import PipelineStack
 
 app = core.App()
 
-app_name = "chalice-app"
+app_name = "give-transaction-logging"
 pipeline_stack_name = f"{app_name}-pipeline"
 
 PipelineStack(
     app,
     app_name,
     stack_name=pipeline_stack_name,
-    repo_owner="folksgl",
-    repo_name="chalice-cicd-app",
+    repo_owner="zclarkEDC",
+    repo_name="identity-give-transaction-logging",
 )
 
 app.synth()

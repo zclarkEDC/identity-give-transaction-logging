@@ -1,15 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Metadata:
   License: Apache-2.0
-Description: 'AWS CloudFormation Sample Template DynamoDB_Table: This template demonstrates
-  the creation of a DynamoDB table.  **WARNING** This template creates an Amazon DynamoDB
-  table. You will be billed for the AWS resources used if you create a stack from
-  this template.'
+Description: 'AWS CloudFormation Template for GIVE Transaction Logging.'
 Resources:
-  blogDemo:
+  transactionLogs:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: blog-demo-1
+      TableName: transaction-logs-1
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: id
@@ -19,5 +16,6 @@ Resources:
           KeyType: HASH
 Outputs:
   TableName:
-    Value: !Ref 'blogDemo'
+    Value: !Ref 'transactionLogs'
     Description: Table name of the newly created DynamoDB table
+    

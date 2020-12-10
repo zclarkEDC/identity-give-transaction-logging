@@ -3,9 +3,9 @@ import boto3
 from boto3.dynamodb.conditions import Key
 
 
-app = Chalice(app_name="blog-demo")
+app = Chalice(app_name="give-transaction-logging")
 dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table("blog-demo-1")
+table = dynamodb.Table("transaction-logs-1")
 
 
 @app.route("/", methods=["GET"])
