@@ -1,0 +1,6 @@
+.chalice/deployments/
+.chalice/venv/
+venv*
+__pycache__
+cdk.out
+.vscode
