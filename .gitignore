@@ -1,8 +1,8 @@
 .chalice/deployments/
+.chalice/deployed
 .chalice/venv/
 venv*
 __pycache__
 cdk.out
 .vscode
 .pylintrc
-.chalice/deployed
