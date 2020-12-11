@@ -10,6 +10,7 @@ table = dynamodb.Table("transaction-logs-1")
 
 @app.route("/", methods=["GET"])
 def index():
+    """recieves get requests, returns all items in the table"""
     response = table.scan()
     data = response.get("Items", None)
 
@@ -18,6 +19,7 @@ def index():
 
 @app.route("/item/{id}", methods=["GET"])
 def item_get(id):
+    """recieves a get request for a specific item based on id, returns the specified item"""
     response = table.query(KeyConditionExpression=Key("id").eq(id))
     data = response.get("Items", None)
 
@@ -26,6 +28,7 @@ def item_get(id):
 
 @app.route("/item", methods=["POST"])
 def item_set():
+    """recieves a post request to create a new item, creates the item or returns error message"""
     data = app.current_request.json_body
 
     try:
@@ -38,5 +41,6 @@ def item_set():
 
 @app.route("/hello/{name}")
 def hello_name(name):
+    """test function for hello endpoint"""
     # '/hello/james' -> {"hello": "james"}
     return {"hello": name}
