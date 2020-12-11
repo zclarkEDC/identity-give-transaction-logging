@@ -20,7 +20,7 @@
                 "dynamodb:Query"
             ],
             "Resource": [
-                "arn:aws:dynamodb:*:*:table/blog-demo-1"
+                "arn:aws:dynamodb:*:*:table/transaction-logs-1"
             ],
             "Effect": "Allow"
         }
