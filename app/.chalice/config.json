@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "app_name": "app",
+  "app_name": "transaction-logging",
   "automatic_layer": true,
   "stages": {
     "dev": {
