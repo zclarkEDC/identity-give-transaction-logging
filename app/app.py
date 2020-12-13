@@ -11,7 +11,7 @@ _TABLE = None
 
 def get_table():
     """ Return the Transaction Logging Table """
-    global _TABLE
+    global _TABLE  # Assignment to global variable will need 'global' keyword
 
     # Only initialize the Table once for the entire application to limit
     # object duplication and function resource utilization.
