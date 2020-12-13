@@ -1,0 +1,8 @@
+pre-commit
+chalice
+pytest
+aws-cdk.aws-s3
+aws-cdk.aws-codepipeline
+aws-cdk.aws-codepipeline-actions
+aws-cdk.aws-codebuild
+boto3>=1.9.91

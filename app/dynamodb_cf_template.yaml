@@ -1,0 +1,17 @@
+---
+Resources:
+  TransactionLogTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      # NOTE - If this table name changes, make sure to change the table name in the IAM
+      # policy file in .chalice/<policy-file>.json
+      TableName: transaction-log-table
+      PrimaryKey:
+        Name: id
+        Type: String
+  APIHandler:
+    Properties:
+      Environment:
+        Variables:
+          TRANSACTION_LOG_TABLE:
+            Ref: TransactionLogTable
