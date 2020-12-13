@@ -11,11 +11,6 @@ def test_client():
         yield client
 
 
-def test_index_function(test_client):
-    response = test_client.http.get("/")
-    assert response.json_body == {"hello": "world"}
-
-
 def test_hello_name_function(test_client):
     name = "myname"
     response = test_client.http.get(f"/hello/{name}")
