@@ -13,7 +13,7 @@ Building with the CI/CD pipeline can be done as follows:
 cd pipeline/
 cdk deploy --ConnectionSecretId=<my-connection-id>
 ```
-where `ConnectionSecretId` is the CodeStar connection ARN for the repository defined in `pipeline/app.py`.
+where `ConnectionSecretId` is the SecretsManager secret containing the CodeStar connection ARN for the repository defined in `pipeline/app.py`. Note -- the JsonKey for the secret must be 'arn'.
 
 ## Build/Local Deploy
 
