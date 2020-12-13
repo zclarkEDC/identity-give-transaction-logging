@@ -15,7 +15,7 @@ phases:
     commands:
       # Use Build phase to build your artifacts (compile, etc.)
       - cd app
-      - chalice package --merge-template dynamodb_cf_template /tmp/packaged
+      - chalice package --merge-template dynamodb_cf_template.yaml /tmp/packaged
       - aws cloudformation package --template-file /tmp/packaged/sam.json --s3-bucket $PACKAGE_BUCKET --output-template-file ../packaged.yaml
 
 artifacts:
