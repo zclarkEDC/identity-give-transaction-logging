@@ -1,21 +1,17 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Metadata:
-  License: Apache-2.0
-Description: 'AWS CloudFormation Template for GIVE Transaction Logging.'
+---
 Resources:
-  transactionLogs:
-    Type: AWS::DynamoDB::Table
+  TransactionLogTable:
+    Type: AWS::Serverless::SimpleTable
     Properties:
-      TableName: transaction-logs-1
-      BillingMode: PAY_PER_REQUEST
-      AttributeDefinitions:
-        - AttributeName: id
-          AttributeType: S
-      KeySchema:
-        - AttributeName: id
-          KeyType: HASH
-Outputs:
-  TableName:
-    Value: !Ref 'transactionLogs'
-    Description: Table name of the newly created DynamoDB table
-    
+      # NOTE - If this table name changes, make sure to change the table name in the IAM
+      # policy file in .chalice/<policy-file>.json
+      TableName: transaction-log-table
+      PrimaryKey:
+        Name: id
+        Type: String
+  APIHandler:
+    Properties:
+      Environment:
+        Variables:
+          TRANSACTION_LOG_TABLE:
+            Ref: TransactionLogTable

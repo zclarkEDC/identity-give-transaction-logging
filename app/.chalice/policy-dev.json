@@ -20,7 +20,7 @@
                 "dynamodb:Query"
             ],
             "Resource": [
-                "arn:aws:dynamodb:*:*:table/transaction-logs-1"
+                { "Fn::Sub": "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/transaction-log-table" }
             ],
             "Effect": "Allow"
         }
