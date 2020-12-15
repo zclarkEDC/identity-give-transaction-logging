@@ -22,7 +22,7 @@ PipelineStack(
     APP,
     APP_NAME,
     stack_name=PIPELINE_STACK_NAME,
-    repo_owner="zclarkEDC",
+    repo_owner="18F",
     repo_name="identity-give-transaction-logging",
 )
 
