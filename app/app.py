@@ -30,7 +30,7 @@ def index():
     return {"data": data}
 
 
-@app.route("/item/{request_id}", methods=["GET"])
+@app.route("/transaction/{request_id}", methods=["GET"])
 def item_get(request_id):
     """ Returns a specific item based on request_id """
     query_response = get_table().query(KeyConditionExpression=Key("id").eq(request_id))
@@ -39,7 +39,7 @@ def item_get(request_id):
     return {"data": data}
 
 
-@app.route("/item", methods=["POST"])
+@app.route("/transaction", methods=["POST"])
 def item_set():
     """ Creates an item based on the request body """
     data = app.current_request.json_body
