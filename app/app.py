@@ -8,6 +8,9 @@ app = Chalice(app_name="transaction-logging")
 _DYNAMODB = boto3.resource("dynamodb")
 _TABLE = None
 
+# for local dev, uncomment code below
+# table = _DYNAMODB.Table("transaction-log-table")
+
 
 def get_table():
     """ Return the Transaction Logging Table """
@@ -43,9 +46,13 @@ def item_get(request_id):
 def item_set():
     """ Creates an item based on the request body """
     data = app.current_request.json_body
+    print(data)
     if "id" not in data or "text" not in data:
         raise BadRequestError("Invalid request body")
-    get_table().put_item(Item={"id": data["id"], "text": data["text"]})
+
+    get_table().put_item(Item=data)
+    # table.put_item(Item=data) local environment table
+
     return Response(
         body={"message": "Created new transaction log", "id": data["id"]},
         status_code=201,
