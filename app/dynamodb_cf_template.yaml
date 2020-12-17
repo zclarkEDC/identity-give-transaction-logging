@@ -1,14 +1,24 @@
 ---
 Resources:
   TransactionLogTable:
-    Type: AWS::Serverless::SimpleTable
+    Type: AWS::DynamoDB::Table
     Properties:
-      # NOTE - If this table name changes, make sure to change the table name in the IAM
-      # policy file in .chalice/<policy-file>.json
-      TableName: transaction-log-table
-      PrimaryKey:
-        Name: id
-        Type: String
+      TableName: transaction-log-table 
+      AttributeDefinitions: 
+        - 
+          AttributeName: "UUID"
+          AttributeType: "S"
+        - 
+          AttributeName: "Timestamp"
+          AttributeType: "N"
+
+      KeySchema: 
+        - 
+          AttributeName: "UUID"
+          KeyType: "HASH"
+        - 
+          AttributeName: "Timestamp"
+          KeyType: "RANGE"
   APIHandler:
     Properties:
       Environment:
