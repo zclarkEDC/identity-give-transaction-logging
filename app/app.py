@@ -62,7 +62,7 @@ def item_set():
 @app.route("/hello/{name}")
 def hello_name(name):
     """ Test function for hello endpoint """
-    # '/hello/james' -> {"hello": "james"}
+    # '/hello/james' -> {"hello": "james"} update cloud
     return {"hello": name}
 
 
