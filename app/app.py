@@ -1,12 +1,15 @@
 """Basic Transaction Logging Python Chalice API"""
 import os
 import boto3
-from chalice import Chalice, Response
+from chalice import Chalice, Response, BadRequestError
 from boto3.dynamodb.conditions import Key
 
 app = Chalice(app_name="transaction-logging")
 _DYNAMODB = boto3.resource("dynamodb")
 _TABLE = None
+
+# for local dev, uncomment code below
+table = _DYNAMODB.Table("transaction-log-table")
 
 
 def get_table():
@@ -30,7 +33,7 @@ def index():
     return {"data": data}
 
 
-@app.route("/item/{request_id}", methods=["GET"])
+@app.route("/transaction/{request_id}", methods=["GET"])
 def item_get(request_id):
     """ Returns a specific item based on request_id """
     query_response = get_table().query(KeyConditionExpression=Key("id").eq(request_id))
@@ -39,21 +42,21 @@ def item_get(request_id):
     return {"data": data}
 
 
-@app.route("/item", methods=["POST"])
+@app.route("/transaction", methods=["POST"])
 def item_set():
     """ Creates an item based on the request body """
     data = app.current_request.json_body
-    try:
-        get_table().put_item(Item={"id": data["id"], "text": data["text"]})
-        return Response(
-            body={"message": "Created new transaction log", "id": data["id"]},
-            status_code=201,
-            headers=None,
-        )
-    except KeyError:
-        return Response(
-            body={"message": "Invalid request body"}, status_code=400, headers=None
-        )
+    print(data)
+    if "id" not in data or "text" not in data:
+        raise BadRequestError("Invalid request body")
+
+    get_table().put_item(Item=data)
+
+    return Response(
+        body={"message": "Created new transaction log", "id": data["id"]},
+        status_code=201,
+        headers=None,
+    )
 
 
 @app.route("/hello/{name}")
@@ -61,3 +64,10 @@ def hello_name(name):
     """ Test function for hello endpoint """
     # '/hello/james' -> {"hello": "james"}
     return {"hello": name}
+
+
+@app.route("/transaction/{request_id}", methods=["DELETE"])
+def item_delete(request_id):
+    """ Deletes a specific item based on request_id """
+    get_table().delete_item(Key={"id": request_id})
+    return {"message": "delete success"}

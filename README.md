@@ -23,12 +23,7 @@ Then switch to the app with `cd app`.
 
 Finally, launch the local server with `chalice local`.
 
-### Database
-For local testing only...
-
-`aws cloudformation deploy --template-file dynamodb_cf_template.yaml --stack-name transaction-logs-db`
-
-Launches the DB, must redeployed if any DB changes are made.
+*Note: any endpoints with database operations will not function locally.
 
 
 ### Available Endpoints
@@ -39,8 +34,10 @@ Launches the DB, must redeployed if any DB changes are made.
 
 
 ## Example POST Request
+
+Use the deployed aws endpoint for making requests to endpoints that utilize the database.
+
 ```
-http://127.0.0.1:8000/item
 
 {
     "id" : "this is the ID",
