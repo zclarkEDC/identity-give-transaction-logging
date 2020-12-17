@@ -9,7 +9,7 @@ _DYNAMODB = boto3.resource("dynamodb")
 _TABLE = None
 
 # for local dev, uncomment code below
-# table = _DYNAMODB.Table("transaction-log-table")
+table = _DYNAMODB.Table("transaction-log-table")
 
 
 def get_table():
@@ -51,7 +51,6 @@ def item_set():
         raise BadRequestError("Invalid request body")
 
     get_table().put_item(Item=data)
-    # table.put_item(Item=data) local environment table
 
     return Response(
         body={"message": "Created new transaction log", "id": data["id"]},
@@ -65,3 +64,10 @@ def hello_name(name):
     """ Test function for hello endpoint """
     # '/hello/james' -> {"hello": "james"}
     return {"hello": name}
+
+
+@app.route("/transaction/{request_id}", methods=["DELETE"])
+def item_delete(request_id):
+    """ Deletes a specific item based on request_id """
+    get_table().delete_item(Key={"id": request_id})
+    return {"message": "delete success"}
