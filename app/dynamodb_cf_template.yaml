@@ -19,6 +19,9 @@ Resources:
         - 
           AttributeName: "Timestamp"
           KeyType: "RANGE"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
   APIHandler:
     Properties:
       Environment:
