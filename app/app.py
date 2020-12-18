@@ -37,6 +37,9 @@ def index():
 @app.route("/transaction/{request_id}", methods=["GET"])
 def item_get(request_id):
     """ Returns all itmes with the specified UUID """
+    if request_id is None or request_id == "":
+        raise BadRequestError("Empty request, requires UUID of tranasaction")
+
     query_response = get_table().query(
         KeyConditionExpression=Key("UUID").eq(request_id)
     )
@@ -88,9 +91,15 @@ def hello_name(name):
 @app.route("/transaction/{request_id}/{time_stamp}", methods=["DELETE"])
 def item_delete(request_id, time_stamp):
     """ Deletes a specific item based on request_id """
-    print(request_id)
-    print(time_stamp)
-    # get_table().delete_item(Key={'UUID':'101test','Timestamp': 5})
-    get_table().delete_item(Key={"UUID": request_id, "Timestamp": int(time_stamp)})
+    if request_id is None or request_id == "":
+        raise BadRequestError("Invalid UUID, UUID cannot be empty")
+    if time_stamp is None or time_stamp == "":
+        raise BadRequestError("Invalid Timestamp, Timestamp cannot be empty")
 
-    return {"message": "delete success"}
+    # get_table().delete_item(Key={'UUID':'101test','Timestamp': 5})
+    responseree = get_table().delete_item(
+        Key={"UUID": request_id, "Timestamp": int(time_stamp)}, ReturnValues="ALL_OLD"
+    )
+    if "Attributes" not in responseree:
+        raise BadRequestError("Item does not exist in table")
+    return {"message": "Successfully deleted transaction log"}
