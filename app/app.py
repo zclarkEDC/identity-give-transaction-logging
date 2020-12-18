@@ -1,15 +1,14 @@
 """Basic Transaction Logging Python Chalice API"""
 import os
 import boto3
+import time
 from chalice import Chalice, Response, BadRequestError
 from boto3.dynamodb.conditions import Key
+from datetime import datetime
 
 app = Chalice(app_name="transaction-logging")
 _DYNAMODB = boto3.resource("dynamodb")
 _TABLE = None
-
-# for local dev, uncomment code below
-table = _DYNAMODB.Table("transaction-log-table")
 
 
 def get_table():
@@ -49,14 +48,19 @@ def item_get(request_id):
 def item_set():
     """ Creates an item based on the request body """
     data = app.current_request.json_body
-    print(data)
-    if "UUID" not in data or "Timestamp" not in data:
-        raise BadRequestError("Invalid request body")
+    if "UUID" not in data:
+        raise BadRequestError("Invalid request body, missing UUID")
 
+    # Create a timestamp of when the transaction was completed (the time the call is made to transaction-logging), this will be used as the Sort Key
+    data["Timestamp"] = int(time.time())
     get_table().put_item(Item=data)
 
     return Response(
-        body={"message": "Created new transaction log", "UUID": data["UUID"]},
+        body={
+            "message": "Created new transaction log",
+            "UUID": data["UUID"],
+            "Timestamp": data["Timestamp"],
+        },
         status_code=201,
         headers=None,
     )
