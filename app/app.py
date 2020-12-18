@@ -5,6 +5,7 @@ import time
 from chalice import Chalice, Response, BadRequestError
 from boto3.dynamodb.conditions import Key
 from datetime import datetime
+from uuid import UUID
 
 app = Chalice(app_name="transaction-logging")
 _DYNAMODB = boto3.resource("dynamodb")
@@ -48,10 +49,21 @@ def item_get(request_id):
 def item_set():
     """ Creates an item based on the request body """
     data = app.current_request.json_body
-    if "UUID" not in data:
-        raise BadRequestError("Invalid request body, missing UUID")
+    print(data)
 
-    # Create a timestamp of when the transaction was completed (the time the call is made to transaction-logging), this will be used as the Sort Key
+    if data is None:
+        raise BadRequestError("Empty request body, requires UUID")
+
+    if "UUID" not in data:
+        raise BadRequestError("Invalid request body, missing UUID.")
+
+    # Validate that the UUID fits the UUID v4 model
+    try:
+        UUID(data.get("UUID"))
+    except ValueError as invalid_uuid:
+        raise BadRequestError("Invalid UUID.") from invalid_uuid
+
+    # Create a timestamp of when the transaction was completed (the time the call is made to transaction-logging), this will be used as the Sort Key.
     data["Timestamp"] = int(time.time())
     get_table().put_item(Item=data)
 
