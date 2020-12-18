@@ -36,8 +36,10 @@ def index():
 
 @app.route("/transaction/{request_id}", methods=["GET"])
 def item_get(request_id):
-    """ Returns a specific item based on request_id """
-    query_response = get_table().query(KeyConditionExpression=Key("id").eq(request_id))
+    """ Returns all itmes with the specified UUID """
+    query_response = get_table().query(
+        KeyConditionExpression=Key("UUID").eq(request_id)
+    )
     data = query_response.get("Items", None)
 
     return {"data": data}
