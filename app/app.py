@@ -96,10 +96,10 @@ def item_delete(request_id, time_stamp):
     if time_stamp is None or time_stamp == "":
         raise BadRequestError("Invalid Timestamp, Timestamp cannot be empty")
 
-    # get_table().delete_item(Key={'UUID':'101test','Timestamp': 5})
-    responseree = get_table().delete_item(
+    # Delete item from DB, return the item that was deleted as 'Attributes'
+    response_from_db = get_table().delete_item(
         Key={"UUID": request_id, "Timestamp": int(time_stamp)}, ReturnValues="ALL_OLD"
     )
-    if "Attributes" not in responseree:
+    if "Attributes" not in response_from_db:
         raise BadRequestError("Item does not exist in table")
     return {"message": "Successfully deleted transaction log"}
