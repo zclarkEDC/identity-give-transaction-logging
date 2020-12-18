@@ -29,6 +29,7 @@ def index():
     """ Return all items in the table"""
     response = get_table().scan()
     data = response.get("Items", None)
+    print(data)
 
     return {"data": data}
 
@@ -47,13 +48,13 @@ def item_set():
     """ Creates an item based on the request body """
     data = app.current_request.json_body
     print(data)
-    if "id" not in data or "text" not in data:
+    if "UUID" not in data or "Timestamp" not in data:
         raise BadRequestError("Invalid request body")
 
     get_table().put_item(Item=data)
 
     return Response(
-        body={"message": "Created new transaction log", "id": data["id"]},
+        body={"message": "Created new transaction log", "UUID": data["UUID"]},
         status_code=201,
         headers=None,
     )
@@ -62,12 +63,16 @@ def item_set():
 @app.route("/hello/{name}")
 def hello_name(name):
     """ Test function for hello endpoint """
-    # '/hello/james' -> {"hello": "james"} update cloud
+    # '/hello/james' -> {"hello": "james"} update
     return {"hello": name}
 
 
-@app.route("/transaction/{request_id}", methods=["DELETE"])
-def item_delete(request_id):
+@app.route("/transaction/{request_id}/{time_stamp}", methods=["DELETE"])
+def item_delete(request_id, time_stamp):
     """ Deletes a specific item based on request_id """
-    get_table().delete_item(Key={"id": request_id})
+    print(request_id)
+    print(time_stamp)
+    # get_table().delete_item(Key={'UUID':'101test','Timestamp': 5})
+    get_table().delete_item(Key={"UUID": request_id, "Timestamp": int(time_stamp)})
+
     return {"message": "delete success"}
